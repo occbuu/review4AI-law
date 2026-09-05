@@ -6,7 +6,7 @@
  *   Execute as: Me
  *   Who has access: Anyone
  */
-var FOLDER_ID = "PASTE_FOLDER_ID_HERE";
+var FOLDER_ID = "1bZtOX1H0fdL_0XNuRqqvvIlBJLOay3PL";
 
 function doPost(e) {
   try {
