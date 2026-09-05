@@ -233,6 +233,53 @@
     padding:14px 18px; display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap;
   }
   textarea#json-fallback{width:100%; height:160px; font-family:monospace; font-size:12px;}
+
+  .brief-ol{margin:0; padding-left:1.2em; color:var(--ink); font-size:14.5px;}
+  .brief-ol li + li{margin-top:8px;}
+  .brief-p{margin:0; font-size:14.5px; color:var(--ink);}
+  .callout{
+    border-left:3px solid var(--gold);
+    background:var(--line-soft);
+    padding:12px 14px;
+    border-radius:0 8px 8px 0;
+    font-size:13.5px;
+    color:var(--ink);
+  }
+  .pipeline{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-top:4px;
+  }
+  @media (max-width:800px){.pipeline{grid-template-columns:1fr 1fr;}}
+  @media (max-width:480px){.pipeline{grid-template-columns:1fr;}}
+  .pipeline-step{
+    background:var(--paper);
+    border:1px solid var(--line-soft);
+    border-radius:8px;
+    padding:10px 11px 12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .pipeline-step .n{
+    font-weight:700; color:var(--gold); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+  }
+  .pipeline-step b{display:block; margin:4px 0 3px; font-size:13px; color:var(--ink);}
+  .mini-table{width:100%; border-collapse:collapse; font-size:13px;}
+  .mini-table th, .mini-table td{
+    border-bottom:1px solid var(--line-soft); padding:8px 6px; text-align:left; vertical-align:top;
+  }
+  .mini-table th{
+    color:var(--ink-soft); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+  }
+  details.brief-fold{
+    border:1px solid var(--line); background:var(--panel); border-radius:var(--radius);
+    padding:16px 20px;
+  }
+  details.brief-fold summary{
+    cursor:pointer; font-weight:700; color:var(--accent-ink); font-size:14.5px; font-family:var(--serif);
+  }
+  details.brief-fold .fold-body{margin-top:12px;}
 </style>
 
 <div class="topbar">
@@ -244,18 +291,119 @@
 </div>
 
 <!-- ============ LANDING ============ -->
-<div id="view-landing" class="shell">
+<div id="view-landing" class="shell wide">
   <div class="stack">
     <div class="eyebrow">Bảng đánh giá chuyên gia</div>
     <h1>Đánh giá các phát hiện về hợp đồng chuyển giao công nghệ</h1>
     <p class="lede">
       Công cụ này thu thập ý kiến của các chuyên gia pháp luật về mức độ chính xác của các phát hiện
       trong bài viết <b>"Technology Transfer Contracts in Vietnam: Mapping Regulatory Gaps through
-      Topic Modelling and Doctrinal Analysis."</b> Bài viết kết hợp mô hình hóa chủ đề trên ngữ liệu
-      truyền thông – chính sách với phân tích khung pháp luật hợp đồng chuyển giao công nghệ (CGCN)
-      hiện hành tại Việt Nam. Ý kiến của quý chuyên gia sẽ được dùng để hiệu chỉnh, bổ sung trước khi
-      hoàn thiện bài viết.
+      Topic Modelling and Doctrinal Analysis"</b> (Tam et al.). Bài viết kết hợp mô hình hóa chủ đề
+      trên ngữ liệu truyền thông – chính sách với phân tích học thuyết pháp lý về hợp đồng chuyển giao
+      công nghệ (CGCN). Ý kiến của quý chuyên gia sẽ được dùng để hiệu chỉnh trước khi hoàn thiện bài.
+      <a href="Paper/Paper4L_MsTam.pdf">Tải bản thảo PDF</a>.
     </p>
+
+    <div class="card stack">
+      <div class="eyebrow">Bối cảnh bài viết</div>
+      <p class="brief-p">
+        Chuyển giao công nghệ đang ở trung tâm chiến lược khoa học, công nghệ và đổi mới sáng tạo
+        (NQ 57-NQ/TW, 22/12/2024). Khung luật cũng đang đổi: Luật CGCN 2017 (07/2017/QH14) được sửa
+        bởi Luật 115/2025/QH15 (dự kiến có hiệu lực 01/4/2026); Luật Khoa học, Công nghệ và Đổi mới
+        sáng tạo 93/2025/QH15 thay khung luật KH&amp;CN trước đó. Học thuật pháp lý về hợp đồng CGCN
+        đã khá dày (khung luật, giao điểm SHTT–cạnh tranh, thương mại hóa sáng chế khu vực công, định giá
+        tài sản trí tuệ), nhưng thường tách khỏi diễn ngôn công chúng cùng thời. Ngược lại, phân tích tính toán
+        trên tin tức/chính sách thường dừng ở việc mô tả công nghệ nào đang được chú ý, mà không đối chiếu
+        có hệ thống với cấu trúc Điều luật của hợp đồng. Bài viết muốn nối hai nguồn tri thức đó.
+      </p>
+      <div>
+        <div class="hint" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:8px;">Ba câu hỏi nghiên cứu</div>
+        <ol class="brief-ol">
+          <li>Các chủ đề mà mô hình tính toán rút ra từ diễn ngôn công chúng <b>nằm ở đâu</b> trong cấu trúc pháp lý của hợp đồng CGCN?</li>
+          <li>Tại mỗi điểm đó, khung hiện hành (Luật CGCN và các luật liên quan) <b>đã đủ điều chỉnh</b>, hay phải đọc cùng đạo luật khác?</li>
+          <li>Những khoảng trống đó <b>hàm ý gì</b> cho chương trình sửa luật đang diễn ra?</li>
+        </ol>
+      </div>
+      <p class="brief-p">
+        Ba nguồn dùng để trả lời: (i) kết quả mô hình hóa chủ đề và mã hóa trục trên 34 văn bản;
+        (ii) đọc trực tiếp Chương III Luật CGCN 2017 (Điều 21–34) và một mẫu hợp đồng CGCN 18 điều khoản;
+        (iii) học thuật pháp lý đã công bố, cùng tranh chấp CGCN/sáng chế đã vào hồ sơ công khai
+        (án hoặc tạp chí nghề nghiệp) — ví dụ Bản án 04/2019/KDTM-PT của TAND Cấp cao tại Đà Nẵng.
+      </p>
+    </div>
+
+    <div class="card stack">
+      <div class="eyebrow">Máy tính rút chủ đề như thế nào</div>
+      <p class="brief-p">
+        Đây <b>không</b> phải việc dùng ChatGPT hay mô hình ngôn ngữ lớn để “tóm tắt luật” rồi sinh ra khoảng trống.
+        Bài theo truyền thống <i>computational grounded theory</i> (Nelson, 2020): công cụ tính toán
+        <b>mở rộng trường quan sát</b>, không thay thế phán đoán lý thuyết và đọc văn bản luật.
+      </p>
+      <div class="pipeline" aria-label="Quy trình năm lớp">
+        <div class="pipeline-step"><span class="n">1 · Ngữ liệu</span><b>34 văn bản tiếng Việt</b>Tin tức và văn bản chính sách về KH,CN&amp;ĐMST; mã hóa truy vết (HDCG_A01, Bài14…).</div>
+        <div class="pipeline-step"><span class="n">2 · Mô hình</span><b>NMF, K = 7</b>Phân rã ma trận không âm; đối chiếu LDA, KMeans trên TF-IDF/LSA, và phân cụm BM25.</div>
+        <div class="pipeline-step"><span class="n">3 · Ổn định</span><b>ARI = 0,448</b>NMF khớp LDA ở K=7 tốt hơn rõ so với K=3 tự chọn (ARI = 0,060) — cấu trúc 7 chủ đề không phải nhiễu một thuật toán.</div>
+        <div class="pipeline-step"><span class="n">4 · Con người</span><b>Mã hóa trục</b>Strauss &amp; Corbin (1998): gộp 7 chủ đề bậc hai thành 4 khía cạnh bậc ba, rồi ánh xạ Điều 21–34.</div>
+        <div class="pipeline-step"><span class="n">5 · Luật</span><b>Đối chiếu học thuật</b>Mỗi khía cạnh được đọc với Luật CGCN, mẫu HĐ, và bốn nhánh học thuật (khung luật, SHTT–cạnh tranh, thương mại hóa, định giá).</div>
+      </div>
+      <div class="callout">
+        <b>Máy tính làm gì, người làm gì.</b> NMF chỉ tách cấu trúc từ vựng của ngữ liệu — mô hình
+        <b>không được cung cấp tri thức pháp lý a priori</b>. Việc đặt tên chủ đề (ví dụ “học thuyết điều kiện thiết yếu”
+        cho NMF-6, rút từ 3 văn bản HDCG_A01, A09, A16), việc gộp NMF-5 + NMF-7 thành khía cạnh “công nghệ chiến lược”,
+        và việc ánh xạ sang Điều 22, 23, 25, 27, 28… là bước định tính của nhóm nghiên cứu.
+        Phát hiện trung tâm của bài: chủ đề NMF-6 “trùng khớp” với khoảng trống mà Bùi Thị Hằng Nga (2019)
+        đã chỉ ra bằng phân tích án lệ so sánh — hội tụ hai chiều (dữ liệu ↔ học thuyết), không phải phát hiện luật mới từ thuật toán.
+      </div>
+    </div>
+
+    <details class="brief-fold">
+      <summary>Bốn khía cạnh ánh xạ (Bảng 1) — mở để xem trọng số ngữ liệu</summary>
+      <div class="fold-body">
+        <p class="hint" style="margin:0 0 10px;">Tỷ lệ % là cấu trúc <b>trong ngữ liệu 34 văn bản này</b>, không phải trọng số của vấn đề trong chính sách công nghệ Việt Nam nói chung.</p>
+        <table class="mini-table">
+          <thead><tr><th>Khía cạnh</th><th>Chủ đề NMF</th><th>Vị trí HĐ CGCN</th><th>Đánh giá sơ bộ của bài</th></tr></thead>
+          <tbody>
+            <tr><td>1. Thể chế và thực hành CGCN nền tảng<br><b>58,8% (n=20/34)</b></td><td>NMF-1 hoạt động CGCN; NMF-2 ĐMST/giáo dục; NMF-6 điều kiện thiết yếu</td><td>Điều 22, 23, 25</td><td>Khung giao kết/nội dung tương đối đầy đủ; điều khoản hạn chế cạnh tranh thiếu cơ chế đánh giá cân bằng.</td></tr>
+            <tr><td>2. Công nghệ số ứng dụng ngành<br><b>14,7% (n=5/34)</b></td><td>NMF-4: AI công nghiệp, năng lượng, dữ liệu</td><td>Điều 23(2), Điều 28</td><td>Danh mục Điều 28 xây trước làn sóng AI tạo sinh; tiêu chí kiểm soát công nghệ số chưa cụ thể.</td></tr>
+            <tr><td>3. Công nghệ chiến lược quốc gia<br><b>14,7% (n=5/34, đề xuất gộp)</b></td><td>NMF-5 bán dẫn; NMF-7 lượng tử, an ninh mạng</td><td>Điều 28; NQ 57-NQ/TW</td><td>“Công nghệ chiến lược” mới ở tầng văn kiện chính sách, chưa thành tiêu chí phân loại trong Điều 28.</td></tr>
+            <tr><td>4. Công nghệ trong nông nghiệp<br><b>11,8% (n=4/34)</b></td><td>NMF-3 nông nghiệp, AI</td><td>Điều 23(2), Điều 27</td><td>Không có tiêu chí định giá riêng cho công nghệ sinh học/nông nghiệp.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="brief-fold">
+      <summary>Bảy khoảng trống (Mục 4) và đạo luật được viện dẫn để bù</summary>
+      <div class="fold-body">
+        <table class="mini-table">
+          <thead><tr><th>#</th><th>Khoảng trống</th><th>Luật CGCN 2017</th><th>Đạo luật / thể chế được dựa vào</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Thiếu cơ chế đánh giá cân bằng cho điều khoản hạn chế cạnh tranh</td><td>Điều 22, 25</td><td>Luật Cạnh tranh 2018; cấp phép bắt buộc theo Luật SHTT</td></tr>
+            <tr><td>2</td><td>Thiếu tiêu chí, dữ liệu định giá công nghệ</td><td>Điều 23(6), 27</td><td>Luật Giá 2023 (chính khung này cũng còn thiếu về định giá SHTT)</td></tr>
+            <tr><td>3</td><td>Ranh giới sở hữu tài sản trí tuệ từ ngân sách nhà nước</td><td>gián tiếp, qua chủ thể bên giao</td><td>Pháp luật tài sản công; Luật KH&amp;CN; NĐ 271/2025/NĐ-CP (thí điểm Hà Nội)</td></tr>
+            <tr><td>4</td><td>Bồi thường thiệt hại chưa phù hợp tài sản biến thiên cao</td><td>Điều 23(12)</td><td>BLDS 2015; Luật SHTT (chỉ khi có văn bằng bảo hộ)</td></tr>
+            <tr><td>5</td><td>Kiểm soát an ninh công nghệ số/AI chưa bao quát</td><td>Điều 28 và Danh mục</td><td>Khung kiểm soát xuất khẩu lưỡng dụng chung; pháp luật an ninh mạng</td></tr>
+            <tr><td>6</td><td>“Công nghệ chiến lược quốc gia” chưa là tiêu chí phân loại</td><td>Điều 28</td><td>Luật Công nghệ cao 2014; NQ 57-NQ/TW; Luật 93/2025/QH15</td></tr>
+            <tr><td>7</td><td>Thủ tục đăng ký, cấp phép còn nặng tính hành chính (đang cải cách)</td><td>Điều 29–32</td><td>Khoảng trống thực thi, không phải khoảng trống quy phạm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="brief-fold">
+      <summary>Giới hạn phương pháp — cần nhớ khi đánh giá</summary>
+      <div class="fold-body">
+        <ol class="brief-ol">
+          <li>Ngữ liệu 34 văn bản là <b>khám phá</b>, không suy rộng thống kê. Phần trăm ở Bảng 1 chỉ mô tả cấu trúc ngữ liệu này.</li>
+          <li>Luật 115/2025/QH15 và Luật 93/2025/QH15, tại thời điểm viết bài, được thảo luận ở mức <b>định hướng chính sách đã công bố</b>, chưa như văn bản đã có hiệu lực (dự kiến 01/4/2026).</li>
+          <li>Tranh chấp viện dẫn lấy từ án đã công bố và tạp chí nghề nghiệp, không phải hồ sơ vụ việc gốc; số vụ còn ít, chưa đủ để khái quát xu hướng xét xử.</li>
+          <li>Đóng góp của bài, theo chính tác giả, là <b>tổng hợp và đối chiếu chéo</b> hơn là phát hiện học thuyết mới: khảo sát cả khung Điều 21–34 thay vì đi sâu một chiều như từng nhánh học thuật chuyên biệt.</li>
+        </ol>
+        <p class="brief-p" style="margin-top:12px;">
+          Xin đánh giá <b>phát hiện pháp lý sau khi đã ánh xạ</b> (diễn giải Điều luật, sự tồn tại của khoảng trống, sự phù hợp của nguồn viện dẫn) — không phải đánh giá thuật toán NMF/LDA.
+        </p>
+      </div>
+    </details>
 
     <div class="card stack">
       <div>
@@ -329,6 +477,15 @@
 <!-- ============ REVIEW ============ -->
 <div id="view-review" class="shell hidden">
   <div class="stack">
+    <details class="codebook" id="contextMini">
+      <summary style="cursor:pointer; font-weight:700; color:var(--accent-ink); font-size:13.5px;">Xem lại bối cảnh và cách rút chủ đề</summary>
+      <p class="hint" style="margin-top:10px;">
+        NMF (K=7) tách chủ đề từ 34 văn bản truyền thông–chính sách, đối chiếu LDA (ARI = 0,448), rồi nhóm nghiên cứu mã hóa trục thành 4 khía cạnh và ánh xạ Điều 21–34 Luật CGCN 2017.
+        Mô hình không được “dạy luật”. Phát hiện trung tâm: NMF-6 hội tụ với khoảng trống cơ chế đánh giá cân bằng mà Bùi Thị Hằng Nga (2019) đã chỉ ra.
+        <a href="Paper/Paper4L_MsTam.pdf">Bản thảo PDF</a>.
+      </p>
+    </details>
+
     <details class="codebook" id="codebookMini">
       <summary style="cursor:pointer; font-weight:700; color:var(--accent-ink); font-size:13.5px;">Xem lại thang đánh giá</summary>
       <div class="scale-list" style="margin-top:10px;">
