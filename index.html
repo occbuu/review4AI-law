@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf8f4">
 <title>CGCN Findings Review</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,42 +79,60 @@
   }
 
   *{box-sizing:border-box;}
+  html{
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+  html, body{
+    margin:0;
+    max-width:100%;
+    overflow-x:hidden;
+  }
   body{
     background:var(--paper);
     color:var(--ink);
     font-family:var(--sans);
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
   }
   a{color:var(--accent);}
   h1,h2,h3{font-family:var(--serif); font-weight:700; text-wrap:balance; color:var(--ink); margin:0 0 .4em;}
+  h1{font-size:clamp(1.35rem, 4.6vw, 2rem);}
   .hidden{display:none!important;}
 
   .topbar{
     position:sticky; top:0; z-index:20;
-    background:var(--paper); border-bottom:1px solid var(--line);
-    padding:10px 20px;
+    background:var(--paper);
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:saturate(1.2) blur(10px);
+    -webkit-backdrop-filter:saturate(1.2) blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:10px 16px;
+    padding-top:max(10px, env(safe-area-inset-top));
     display:flex; align-items:center; justify-content:space-between; gap:12px;
   }
   .topbar .brand{
     font-family:var(--serif); font-weight:700; font-size:15px; color:var(--accent-ink);
-    display:flex; align-items:center; gap:8px;
+    display:flex; align-items:center; gap:8px; min-width:0;
   }
   .topbar .brand .mark{
     width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;
     display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;flex:none;
   }
-  .progress-wrap{flex:1; max-width:360px; display:flex; align-items:center; gap:10px;}
+  .brand-short{display:none;}
+  .progress-wrap{flex:1; max-width:360px; display:flex; align-items:center; gap:10px; min-width:0;}
   .progress-track{flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden;}
   .progress-fill{height:100%; background:var(--accent); border-radius:99px; transition:width .25s ease;}
   .progress-label{font-size:12px; color:var(--ink-soft); font-variant-numeric:tabular-nums; white-space:nowrap;}
 
-  .shell{max-width:760px; margin:0 auto; padding:36px 20px 90px;}
+  .shell{max-width:760px; margin:0 auto; padding:28px 16px calc(28px + env(safe-area-inset-bottom));}
   .shell.wide{max-width:840px;}
 
   .card{
     background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:26px 28px;
+    padding:18px 16px;
   }
   .stack > * + *{margin-top:16px;}
 
@@ -120,7 +145,7 @@
 
   .field label{display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--ink);}
   .field input[type=text], .field input[type=email], .field textarea{
-    width:100%; font-family:var(--sans); font-size:14.5px; color:var(--ink);
+    width:100%; max-width:100%; font-family:var(--sans); font-size:16px; color:var(--ink);
     background:var(--paper); border:1px solid var(--line); border-radius:8px;
     padding:10px 12px; resize:vertical;
   }
@@ -128,12 +153,12 @@
     outline:2px solid var(--accent); outline-offset:1px;
   }
   .field .hint{font-size:12px; color:var(--ink-soft); margin-top:4px;}
-  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:560px){.row2{grid-template-columns:1fr;}}
+  .row2{display:grid; grid-template-columns:1fr; gap:14px;}
 
   .btn{
     font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer;
-    border-radius:8px; padding:11px 20px; border:1px solid transparent; transition:filter .15s, background .15s;
+    border-radius:8px; padding:11px 16px; border:1px solid transparent; transition:filter .15s, background .15s;
+    min-height:44px;
   }
   .btn:hover{filter:brightness(0.96);}
   .btn-primary{background:var(--accent); color:#fff;}
@@ -141,10 +166,11 @@
   .btn-ghost:disabled{opacity:.4; cursor:not-allowed;}
   .btn-text{background:none; border:none; color:var(--accent); font-weight:600; padding:6px 2px;}
   .btn-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .btn-row .btn{flex:1 1 auto;}
 
   .codebook{
     border:1px solid var(--line-soft); background:var(--accent-soft); border-radius:var(--radius);
-    padding:18px 20px;
+    padding:14px 16px;
   }
   .codebook h3{font-size:14.5px; color:var(--accent-ink); margin-bottom:10px;}
   .scale-list{display:grid; gap:8px;}
@@ -167,7 +193,7 @@
   .pill.pill-gold{background:#f3e6c9; color:#6b4d18;}
   :root[data-theme="dark"] .pill.pill-gold, :root:not([data-theme="light"]) .pill.pill-gold{background:#3a2e12; color:#e6c477;}
 
-  .item-title{font-size:20px; margin-top:6px;}
+  .item-title{font-size:clamp(1.1rem, 3.6vw, 1.35rem); margin-top:6px;}
   .item-claim{font-size:15.5px; color:var(--ink);}
   .statute-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;}
   .statute-chip{
@@ -184,11 +210,11 @@
     border-radius:0 6px 6px 0;
   }
 
-  .rating-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-  @media (max-width:560px){.rating-grid{grid-template-columns:1fr 1fr;}}
+  .rating-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .rating-btn{
     border-radius:9px; border:1.5px solid var(--line); background:var(--panel);
     padding:12px 10px; text-align:left; cursor:pointer; font-family:var(--sans);
+    min-height:44px; width:100%;
   }
   .rating-btn .rk{
     display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:5px;
@@ -210,18 +236,21 @@
   }
 
   .nav-bar{
-    position:sticky; bottom:0; margin-top:26px; background:var(--paper);
-    border-top:1px solid var(--line); padding:14px 0 0;
-    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    position:sticky; bottom:0; z-index:15; margin-top:26px; background:var(--paper);
+    border-top:1px solid var(--line);
+    padding:12px 0 calc(10px + env(safe-area-inset-bottom));
+    display:flex; justify-content:space-between; align-items:stretch; gap:10px;
   }
+  .nav-bar .btn{flex:1 1 0; white-space:nowrap;}
 
   .summary-row{
-    display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--line-soft);
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;
+    gap:8px 12px; padding:12px 0; border-bottom:1px solid var(--line-soft);
     font-size:14px;
   }
   .summary-row:last-child{border-bottom:none;}
-  .summary-row .st{font-weight:600; color:var(--ink);}
-  .badge{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:99px;}
+  .summary-row .st{font-weight:600; color:var(--ink); flex:1 1 180px; min-width:0;}
+  .badge{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:99px; white-space:nowrap; flex:none;}
   .badge.b1{background:var(--agree-bg); color:var(--agree);}
   .badge.b2{background:var(--partial-bg); color:var(--partial);}
   .badge.b3{background:var(--disagree-bg); color:var(--disagree);}
@@ -247,12 +276,10 @@
   }
   .pipeline{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+    grid-template-columns:1fr;
     gap:8px;
     margin-top:4px;
   }
-  @media (max-width:800px){.pipeline{grid-template-columns:1fr 1fr;}}
-  @media (max-width:480px){.pipeline{grid-template-columns:1fr;}}
   .pipeline-step{
     background:var(--paper);
     border:1px solid var(--line-soft);
@@ -265,6 +292,7 @@
     font-weight:700; color:var(--gold); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
   }
   .pipeline-step b{display:block; margin:4px 0 3px; font-size:13px; color:var(--ink);}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%;}
   .mini-table{width:100%; border-collapse:collapse; font-size:13px;}
   .mini-table th, .mini-table td{
     border-bottom:1px solid var(--line-soft); padding:8px 6px; text-align:left; vertical-align:top;
@@ -274,16 +302,78 @@
   }
   details.brief-fold{
     border:1px solid var(--line); background:var(--panel); border-radius:var(--radius);
-    padding:16px 20px;
+    padding:14px 16px;
   }
-  details.brief-fold summary{
+  details.brief-fold summary,
+  .codebook summary{
     cursor:pointer; font-weight:700; color:var(--accent-ink); font-size:14.5px; font-family:var(--serif);
+    line-height:1.35; padding:6px 0; list-style-position:outside;
   }
   details.brief-fold .fold-body{margin-top:12px;}
+
+  @media (max-width:719px){
+    .mini-table thead{display:none;}
+    .mini-table, .mini-table tbody, .mini-table tr, .mini-table td{display:block; width:100%;}
+    .mini-table tr{
+      border:1px solid var(--line-soft); border-radius:8px;
+      padding:10px 12px; margin-bottom:10px; background:var(--paper);
+    }
+    .mini-table td{border:none; padding:5px 0;}
+    .mini-table td:last-child{padding-bottom:0;}
+    .mini-table td::before{
+      content:attr(data-label);
+      display:block;
+      font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+      color:var(--ink-soft); margin-bottom:2px;
+    }
+    .mini-table td[data-label=""]{display:none;}
+  }
+
+  @media (min-width:560px){
+    .row2{grid-template-columns:1fr 1fr;}
+    .card{padding:22px 22px;}
+    .codebook, details.brief-fold{padding:16px 20px;}
+    .shell{padding:32px 20px calc(32px + env(safe-area-inset-bottom));}
+    .field input[type=text], .field input[type=email], .field textarea{font-size:14.5px;}
+    .btn-row .btn{flex:0 1 auto;}
+  }
+
+  @media (min-width:640px){
+    .pipeline{grid-template-columns:1fr 1fr;}
+    .topbar{padding-left:20px; padding-right:20px;}
+    .card{padding:26px 28px;}
+  }
+
+  @media (min-width:720px){
+    .rating-grid{grid-template-columns:repeat(4,1fr);}
+    .nav-bar .btn{flex:0 1 auto;}
+  }
+
+  @media (min-width:960px){
+    .pipeline{grid-template-columns:repeat(5,1fr);}
+  }
+
+  @media (max-width:520px){
+    .brand-full{display:none;}
+    .brand-short{display:inline;}
+    .topbar{flex-wrap:wrap;}
+    .progress-wrap{flex-basis:100%; max-width:none;}
+  }
+
+  @media (max-width:400px){
+    .nav-bar .btn{font-size:13px; padding:11px 10px;}
+    .rating-btn .rt{font-size:12.5px;}
+  }
+
+  @media (max-width:719px), (hover:none) and (pointer:coarse){
+    .hint-kbd{display:none;}
+  }
 </style>
+</head>
+<body>
 
 <div class="topbar">
-  <div class="brand"><span class="mark">CG</span><span>CGCN Findings — Expert Review</span></div>
+  <div class="brand"><span class="mark">CG</span><span class="brand-full">CGCN Findings — Expert Review</span><span class="brand-short">CGCN Review</span></div>
   <div class="progress-wrap hidden" id="topProgress">
     <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     <div class="progress-label" id="progressLabel">0/12</div>
@@ -360,33 +450,57 @@
       <summary>Bốn khía cạnh ánh xạ (Bảng 1) — mở để xem trọng số ngữ liệu</summary>
       <div class="fold-body">
         <p class="hint" style="margin:0 0 10px;">Tỷ lệ % là cấu trúc <b>trong ngữ liệu 34 văn bản này</b>, không phải trọng số của vấn đề trong chính sách công nghệ Việt Nam nói chung.</p>
+        <div class="table-scroll">
         <table class="mini-table">
           <thead><tr><th>Khía cạnh</th><th>Chủ đề NMF</th><th>Vị trí HĐ CGCN</th><th>Đánh giá sơ bộ của bài</th></tr></thead>
           <tbody>
-            <tr><td>1. Thể chế và thực hành CGCN nền tảng<br><b>58,8% (n=20/34)</b></td><td>NMF-1 hoạt động CGCN; NMF-2 ĐMST/giáo dục; NMF-6 điều kiện thiết yếu</td><td>Điều 22, 23, 25</td><td>Khung giao kết/nội dung tương đối đầy đủ; điều khoản hạn chế cạnh tranh thiếu cơ chế đánh giá cân bằng.</td></tr>
-            <tr><td>2. Công nghệ số ứng dụng ngành<br><b>14,7% (n=5/34)</b></td><td>NMF-4: AI công nghiệp, năng lượng, dữ liệu</td><td>Điều 23(2), Điều 28</td><td>Danh mục Điều 28 xây trước làn sóng AI tạo sinh; tiêu chí kiểm soát công nghệ số chưa cụ thể.</td></tr>
-            <tr><td>3. Công nghệ chiến lược quốc gia<br><b>14,7% (n=5/34, đề xuất gộp)</b></td><td>NMF-5 bán dẫn; NMF-7 lượng tử, an ninh mạng</td><td>Điều 28; NQ 57-NQ/TW</td><td>“Công nghệ chiến lược” mới ở tầng văn kiện chính sách, chưa thành tiêu chí phân loại trong Điều 28.</td></tr>
-            <tr><td>4. Công nghệ trong nông nghiệp<br><b>11,8% (n=4/34)</b></td><td>NMF-3 nông nghiệp, AI</td><td>Điều 23(2), Điều 27</td><td>Không có tiêu chí định giá riêng cho công nghệ sinh học/nông nghiệp.</td></tr>
+            <tr>
+              <td data-label="Khía cạnh">1. Thể chế và thực hành CGCN nền tảng<br><b>58,8% (n=20/34)</b></td>
+              <td data-label="Chủ đề NMF">NMF-1 hoạt động CGCN; NMF-2 ĐMST/giáo dục; NMF-6 điều kiện thiết yếu</td>
+              <td data-label="Vị trí HĐ CGCN">Điều 22, 23, 25</td>
+              <td data-label="Đánh giá sơ bộ">Khung giao kết/nội dung tương đối đầy đủ; điều khoản hạn chế cạnh tranh thiếu cơ chế đánh giá cân bằng.</td>
+            </tr>
+            <tr>
+              <td data-label="Khía cạnh">2. Công nghệ số ứng dụng ngành<br><b>14,7% (n=5/34)</b></td>
+              <td data-label="Chủ đề NMF">NMF-4: AI công nghiệp, năng lượng, dữ liệu</td>
+              <td data-label="Vị trí HĐ CGCN">Điều 23(2), Điều 28</td>
+              <td data-label="Đánh giá sơ bộ">Danh mục Điều 28 xây trước làn sóng AI tạo sinh; tiêu chí kiểm soát công nghệ số chưa cụ thể.</td>
+            </tr>
+            <tr>
+              <td data-label="Khía cạnh">3. Công nghệ chiến lược quốc gia<br><b>14,7% (n=5/34, đề xuất gộp)</b></td>
+              <td data-label="Chủ đề NMF">NMF-5 bán dẫn; NMF-7 lượng tử, an ninh mạng</td>
+              <td data-label="Vị trí HĐ CGCN">Điều 28; NQ 57-NQ/TW</td>
+              <td data-label="Đánh giá sơ bộ">“Công nghệ chiến lược” mới ở tầng văn kiện chính sách, chưa thành tiêu chí phân loại trong Điều 28.</td>
+            </tr>
+            <tr>
+              <td data-label="Khía cạnh">4. Công nghệ trong nông nghiệp<br><b>11,8% (n=4/34)</b></td>
+              <td data-label="Chủ đề NMF">NMF-3 nông nghiệp, AI</td>
+              <td data-label="Vị trí HĐ CGCN">Điều 23(2), Điều 27</td>
+              <td data-label="Đánh giá sơ bộ">Không có tiêu chí định giá riêng cho công nghệ sinh học/nông nghiệp.</td>
+            </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </details>
 
     <details class="brief-fold">
       <summary>Bảy khoảng trống (Mục 4) và đạo luật được viện dẫn để bù</summary>
       <div class="fold-body">
+        <div class="table-scroll">
         <table class="mini-table">
           <thead><tr><th>#</th><th>Khoảng trống</th><th>Luật CGCN 2017</th><th>Đạo luật / thể chế được dựa vào</th></tr></thead>
           <tbody>
-            <tr><td>1</td><td>Thiếu cơ chế đánh giá cân bằng cho điều khoản hạn chế cạnh tranh</td><td>Điều 22, 25</td><td>Luật Cạnh tranh 2018; cấp phép bắt buộc theo Luật SHTT</td></tr>
-            <tr><td>2</td><td>Thiếu tiêu chí, dữ liệu định giá công nghệ</td><td>Điều 23(6), 27</td><td>Luật Giá 2023 (chính khung này cũng còn thiếu về định giá SHTT)</td></tr>
-            <tr><td>3</td><td>Ranh giới sở hữu tài sản trí tuệ từ ngân sách nhà nước</td><td>gián tiếp, qua chủ thể bên giao</td><td>Pháp luật tài sản công; Luật KH&amp;CN; NĐ 271/2025/NĐ-CP (thí điểm Hà Nội)</td></tr>
-            <tr><td>4</td><td>Bồi thường thiệt hại chưa phù hợp tài sản biến thiên cao</td><td>Điều 23(12)</td><td>BLDS 2015; Luật SHTT (chỉ khi có văn bằng bảo hộ)</td></tr>
-            <tr><td>5</td><td>Kiểm soát an ninh công nghệ số/AI chưa bao quát</td><td>Điều 28 và Danh mục</td><td>Khung kiểm soát xuất khẩu lưỡng dụng chung; pháp luật an ninh mạng</td></tr>
-            <tr><td>6</td><td>“Công nghệ chiến lược quốc gia” chưa là tiêu chí phân loại</td><td>Điều 28</td><td>Luật Công nghệ cao 2014; NQ 57-NQ/TW; Luật 93/2025/QH15</td></tr>
-            <tr><td>7</td><td>Thủ tục đăng ký, cấp phép còn nặng tính hành chính (đang cải cách)</td><td>Điều 29–32</td><td>Khoảng trống thực thi, không phải khoảng trống quy phạm</td></tr>
+            <tr><td data-label="STT">1</td><td data-label="Khoảng trống">Thiếu cơ chế đánh giá cân bằng cho điều khoản hạn chế cạnh tranh</td><td data-label="Luật CGCN 2017">Điều 22, 25</td><td data-label="Đạo luật / thể chế">Luật Cạnh tranh 2018; cấp phép bắt buộc theo Luật SHTT</td></tr>
+            <tr><td data-label="STT">2</td><td data-label="Khoảng trống">Thiếu tiêu chí, dữ liệu định giá công nghệ</td><td data-label="Luật CGCN 2017">Điều 23(6), 27</td><td data-label="Đạo luật / thể chế">Luật Giá 2023 (chính khung này cũng còn thiếu về định giá SHTT)</td></tr>
+            <tr><td data-label="STT">3</td><td data-label="Khoảng trống">Ranh giới sở hữu tài sản trí tuệ từ ngân sách nhà nước</td><td data-label="Luật CGCN 2017">gián tiếp, qua chủ thể bên giao</td><td data-label="Đạo luật / thể chế">Pháp luật tài sản công; Luật KH&amp;CN; NĐ 271/2025/NĐ-CP (thí điểm Hà Nội)</td></tr>
+            <tr><td data-label="STT">4</td><td data-label="Khoảng trống">Bồi thường thiệt hại chưa phù hợp tài sản biến thiên cao</td><td data-label="Luật CGCN 2017">Điều 23(12)</td><td data-label="Đạo luật / thể chế">BLDS 2015; Luật SHTT (chỉ khi có văn bằng bảo hộ)</td></tr>
+            <tr><td data-label="STT">5</td><td data-label="Khoảng trống">Kiểm soát an ninh công nghệ số/AI chưa bao quát</td><td data-label="Luật CGCN 2017">Điều 28 và Danh mục</td><td data-label="Đạo luật / thể chế">Khung kiểm soát xuất khẩu lưỡng dụng chung; pháp luật an ninh mạng</td></tr>
+            <tr><td data-label="STT">6</td><td data-label="Khoảng trống">“Công nghệ chiến lược quốc gia” chưa là tiêu chí phân loại</td><td data-label="Luật CGCN 2017">Điều 28</td><td data-label="Đạo luật / thể chế">Luật Công nghệ cao 2014; NQ 57-NQ/TW; Luật 93/2025/QH15</td></tr>
+            <tr><td data-label="STT">7</td><td data-label="Khoảng trống">Thủ tục đăng ký, cấp phép còn nặng tính hành chính (đang cải cách)</td><td data-label="Luật CGCN 2017">Điều 29–32</td><td data-label="Đạo luật / thể chế">Khoảng trống thực thi, không phải khoảng trống quy phạm</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
     </details>
 
@@ -524,7 +638,7 @@
           <button class="rating-btn" data-v="3"><span class="rk">3</span><span class="rt">Không đồng ý</span></button>
           <button class="rating-btn" data-v="4"><span class="rk">4</span><span class="rt">Không đủ cơ sở</span></button>
         </div>
-        <p class="hint">Phím tắt: <span class="kbd">1</span>–<span class="kbd">4</span> để chọn, <span class="kbd">←</span> <span class="kbd">→</span> để chuyển mục.</p>
+        <p class="hint hint-kbd">Phím tắt: <span class="kbd">1</span>–<span class="kbd">4</span> để chọn, <span class="kbd">←</span> <span class="kbd">→</span> để chuyển mục.</p>
       </div>
 
       <div class="field">
@@ -1019,3 +1133,5 @@
 
 })();
 </script>
+</body>
+</html>
