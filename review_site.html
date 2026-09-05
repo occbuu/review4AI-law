@@ -1,0 +1,864 @@
+<title>CGCN Findings Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b2430;
+    --ink-soft:#4a5568;
+    --paper:#faf8f4;
+    --panel:#ffffff;
+    --line:#e4ded2;
+    --line-soft:#efe9dd;
+    --accent:#1f3864;
+    --accent-soft:#e8edf5;
+    --accent-ink:#13233d;
+    --gold:#a97c2f;
+    --agree:#2f7d5f;
+    --agree-bg:#e7f3ed;
+    --partial:#b7791f;
+    --partial-bg:#faf0dd;
+    --disagree:#b64a3c;
+    --disagree-bg:#fbeae7;
+    --cannot:#6b7280;
+    --cannot-bg:#eef0f2;
+    --radius:10px;
+    --serif:'Noto Serif',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) {
+      --ink:#eae6dc;
+      --ink-soft:#b8b2a4;
+      --paper:#181613;
+      --panel:#221f1a;
+      --line:#3a352c;
+      --line-soft:#2c2822;
+      --accent:#7fa0d6;
+      --accent-soft:#232c3c;
+      --accent-ink:#cfe0ff;
+      --gold:#d7a94f;
+      --agree:#6fbf9a;
+      --agree-bg:#1c2e26;
+      --partial:#e0b15c;
+      --partial-bg:#332a17;
+      --disagree:#e08a7a;
+      --disagree-bg:#3a221d;
+      --cannot:#9aa1ab;
+      --cannot-bg:#26282c;
+    }
+    :root:not([data-theme="light"]) .btn-primary{ color:#0d1420; }
+  }
+  :root[data-theme="dark"] .btn-primary{ color:#0d1420; }
+  :root[data-theme="dark"]{
+    --ink:#eae6dc;
+    --ink-soft:#b8b2a4;
+    --paper:#181613;
+    --panel:#221f1a;
+    --line:#3a352c;
+    --line-soft:#2c2822;
+    --accent:#7fa0d6;
+    --accent-soft:#232c3c;
+    --accent-ink:#cfe0ff;
+    --gold:#d7a94f;
+    --agree:#6fbf9a;
+    --agree-bg:#1c2e26;
+    --partial:#e0b15c;
+    --partial-bg:#332a17;
+    --disagree:#e08a7a;
+    --disagree-bg:#3a221d;
+    --cannot:#9aa1ab;
+    --cannot-bg:#26282c;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:var(--serif); font-weight:700; text-wrap:balance; color:var(--ink); margin:0 0 .4em;}
+  .hidden{display:none!important;}
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    padding:10px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .topbar .brand{
+    font-family:var(--serif); font-weight:700; font-size:15px; color:var(--accent-ink);
+    display:flex; align-items:center; gap:8px;
+  }
+  .topbar .brand .mark{
+    width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;flex:none;
+  }
+  .progress-wrap{flex:1; max-width:360px; display:flex; align-items:center; gap:10px;}
+  .progress-track{flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden;}
+  .progress-fill{height:100%; background:var(--accent); border-radius:99px; transition:width .25s ease;}
+  .progress-label{font-size:12px; color:var(--ink-soft); font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+  .shell{max-width:760px; margin:0 auto; padding:36px 20px 90px;}
+  .shell.wide{max-width:840px;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 28px;
+  }
+  .stack > * + *{margin-top:16px;}
+
+  .eyebrow{
+    font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--gold);
+  }
+  .lede{color:var(--ink-soft); font-size:15.5px;}
+  .lede b, .lede strong{color:var(--ink);}
+
+  .field label{display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--ink);}
+  .field input[type=text], .field input[type=email], .field textarea{
+    width:100%; font-family:var(--sans); font-size:14.5px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:8px;
+    padding:10px 12px; resize:vertical;
+  }
+  .field input:focus, .field textarea:focus, button:focus-visible{
+    outline:2px solid var(--accent); outline-offset:1px;
+  }
+  .field .hint{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:560px){.row2{grid-template-columns:1fr;}}
+
+  .btn{
+    font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer;
+    border-radius:8px; padding:11px 20px; border:1px solid transparent; transition:filter .15s, background .15s;
+  }
+  .btn:hover{filter:brightness(0.96);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-ghost{background:transparent; border-color:var(--line); color:var(--ink);}
+  .btn-ghost:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-text{background:none; border:none; color:var(--accent); font-weight:600; padding:6px 2px;}
+  .btn-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+  .codebook{
+    border:1px solid var(--line-soft); background:var(--accent-soft); border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .codebook h3{font-size:14.5px; color:var(--accent-ink); margin-bottom:10px;}
+  .scale-list{display:grid; gap:8px;}
+  .scale-item{display:flex; gap:10px; align-items:baseline; font-size:13.5px;}
+  .scale-key{
+    font-family:var(--sans); font-weight:700; font-size:12px; color:#fff; background:var(--ink-soft);
+    width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .scale-item.k1 .scale-key{background:var(--agree);}
+  .scale-item.k2 .scale-key{background:var(--partial);}
+  .scale-item.k3 .scale-key{background:var(--disagree);}
+  .scale-item.k4 .scale-key{background:var(--cannot);}
+
+  .item-meta{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .pill{
+    font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:99px;
+    background:var(--line-soft); color:var(--ink-soft); font-variant-numeric:tabular-nums;
+  }
+  .pill.pill-accent{background:var(--accent-soft); color:var(--accent-ink);}
+  .pill.pill-gold{background:#f3e6c9; color:#6b4d18;}
+  :root[data-theme="dark"] .pill.pill-gold, :root:not([data-theme="light"]) .pill.pill-gold{background:#3a2e12; color:#e6c477;}
+
+  .item-title{font-size:20px; margin-top:6px;}
+  .item-claim{font-size:15.5px; color:var(--ink);}
+  .statute-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;}
+  .statute-chip{
+    font-family:var(--sans); font-size:12px; font-weight:600; color:var(--accent-ink);
+    background:var(--accent-soft); border:1px solid var(--line-soft); padding:4px 9px; border-radius:6px;
+  }
+  .sources{font-size:13px; color:var(--ink-soft);}
+  .toggle-en{
+    margin-top:10px; border-top:1px dashed var(--line); padding-top:10px;
+  }
+  .toggle-en blockquote{
+    margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--gold);
+    background:var(--line-soft); font-style:italic; font-size:13.5px; color:var(--ink-soft);
+    border-radius:0 6px 6px 0;
+  }
+
+  .rating-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+  @media (max-width:560px){.rating-grid{grid-template-columns:1fr 1fr;}}
+  .rating-btn{
+    border-radius:9px; border:1.5px solid var(--line); background:var(--panel);
+    padding:12px 10px; text-align:left; cursor:pointer; font-family:var(--sans);
+  }
+  .rating-btn .rk{
+    display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:5px;
+    font-size:11px; font-weight:700; color:#fff; margin-right:6px;
+  }
+  .rating-btn .rt{font-size:13.5px; font-weight:600; color:var(--ink); display:block; margin-top:6px;}
+  .rating-btn[data-v="1"] .rk{background:var(--agree);}
+  .rating-btn[data-v="2"] .rk{background:var(--partial);}
+  .rating-btn[data-v="3"] .rk{background:var(--disagree);}
+  .rating-btn[data-v="4"] .rk{background:var(--cannot);}
+  .rating-btn.active[data-v="1"]{background:var(--agree-bg); border-color:var(--agree);}
+  .rating-btn.active[data-v="2"]{background:var(--partial-bg); border-color:var(--partial);}
+  .rating-btn.active[data-v="3"]{background:var(--disagree-bg); border-color:var(--disagree);}
+  .rating-btn.active[data-v="4"]{background:var(--cannot-bg); border-color:var(--cannot);}
+
+  .kbd{
+    font-family:var(--sans); font-size:11px; border:1px solid var(--line); border-bottom-width:2px;
+    border-radius:4px; padding:1px 6px; color:var(--ink-soft); background:var(--panel);
+  }
+
+  .nav-bar{
+    position:sticky; bottom:0; margin-top:26px; background:var(--paper);
+    border-top:1px solid var(--line); padding:14px 0 0;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+
+  .summary-row{
+    display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--line-soft);
+    font-size:14px;
+  }
+  .summary-row:last-child{border-bottom:none;}
+  .summary-row .st{font-weight:600; color:var(--ink);}
+  .badge{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:99px;}
+  .badge.b1{background:var(--agree-bg); color:var(--agree);}
+  .badge.b2{background:var(--partial-bg); color:var(--partial);}
+  .badge.b3{background:var(--disagree-bg); color:var(--disagree);}
+  .badge.b4{background:var(--cannot-bg); color:var(--cannot);}
+
+  .foot-note{font-size:12.5px; color:var(--ink-soft); text-align:center; margin-top:30px;}
+  .resume-banner{
+    background:var(--accent-soft); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:14px 18px; display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap;
+  }
+  textarea#json-fallback{width:100%; height:160px; font-family:monospace; font-size:12px;}
+</style>
+
+<div class="topbar">
+  <div class="brand"><span class="mark">CG</span><span>CGCN Findings — Expert Review</span></div>
+  <div class="progress-wrap hidden" id="topProgress">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progressLabel">0/12</div>
+  </div>
+</div>
+
+<!-- ============ LANDING ============ -->
+<div id="view-landing" class="shell">
+  <div class="stack">
+    <div class="eyebrow">Bảng đánh giá chuyên gia</div>
+    <h1>Đánh giá các phát hiện về hợp đồng chuyển giao công nghệ</h1>
+    <p class="lede">
+      Công cụ này thu thập ý kiến của các chuyên gia pháp luật về mức độ chính xác của các phát hiện
+      trong bài viết <b>"Technology Transfer Contracts in Vietnam: Mapping Regulatory Gaps through
+      Topic Modelling and Doctrinal Analysis."</b> Bài viết kết hợp mô hình hóa chủ đề trên ngữ liệu
+      truyền thông – chính sách với phân tích khung pháp luật hợp đồng chuyển giao công nghệ (CGCN)
+      hiện hành tại Việt Nam. Ý kiến của quý chuyên gia sẽ được dùng để hiệu chỉnh, bổ sung trước khi
+      hoàn thiện bài viết.
+    </p>
+
+    <div class="card stack">
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px;">Nội dung sẽ đánh giá</div>
+        <p class="lede" style="margin:0;">
+          12 mục — 4 khía cạnh ánh xạ chủ đề (Mục 3), 1 phát hiện trung tâm về học thuyết điều kiện
+          thiết yếu (Mục 3.3), và 7 khoảng trống pháp luật cùng đạo luật được viện dẫn để bù đắp (Mục 4).
+          Mỗi mục kèm căn cứ Điều luật và nguồn trích dẫn để quý chuyên gia đối chiếu.
+        </p>
+      </div>
+      <div class="codebook">
+        <h3>Thang đánh giá</h3>
+        <div class="scale-list">
+          <div class="scale-item k1"><span class="scale-key">1</span><span><b>Đồng ý</b> — phát hiện phản ánh đúng pháp luật hiện hành và nguồn trích dẫn phù hợp.</span></div>
+          <div class="scale-item k2"><span class="scale-key">2</span><span><b>Đồng ý một phần</b> — về cơ bản đúng nhưng cần điều chỉnh, bổ sung điều kiện.</span></div>
+          <div class="scale-item k3"><span class="scale-key">3</span><span><b>Không đồng ý</b> — nhận định sai về pháp luật, hoặc khoảng trống nêu ra không tồn tại như mô tả.</span></div>
+          <div class="scale-item k4"><span class="scale-key">4</span><span><b>Không đủ cơ sở đánh giá</b> — ngoài phạm vi chuyên môn hoặc thiếu thông tin để nhận định.</span></div>
+        </div>
+        <p class="hint" style="margin-top:12px;">
+          Xin đánh giá theo đúng hiểu biết chuyên môn của quý vị về pháp luật hiện hành; nếu không chắc,
+          xin chọn mục 4 thay vì suy đoán. Mỗi mục đều có ô góp ý và ô đề xuất chỉnh sửa/trích dẫn thay thế.
+        </p>
+      </div>
+    </div>
+
+    <div id="resumeBanner" class="resume-banner hidden">
+      <div>
+        <b>Có một lượt đánh giá đang dang dở trên trình duyệt này.</b>
+        <div class="hint" style="margin-top:2px;">Bạn có thể tiếp tục hoặc bắt đầu lại từ đầu.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnDiscard">Bắt đầu lại</button>
+        <button class="btn btn-primary" id="btnResume">Tiếp tục</button>
+      </div>
+    </div>
+
+    <div class="card stack">
+      <div class="eyebrow">Thông tin người đánh giá</div>
+      <div class="row2">
+        <div class="field">
+          <label for="rName">Họ và tên</label>
+          <input type="text" id="rName" placeholder="VD: PGS.TS. Nguyễn Văn A">
+        </div>
+        <div class="field">
+          <label for="rAffil">Đơn vị công tác</label>
+          <input type="text" id="rAffil" placeholder="VD: Trường Đại học Luật, ĐH Huế">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="rEmail">Email liên hệ <span style="font-weight:400;color:var(--ink-soft);">(không bắt buộc)</span></label>
+          <input type="email" id="rEmail" placeholder="email@vidu.com">
+        </div>
+        <div class="field">
+          <label for="rExpertise">Lĩnh vực chuyên môn <span style="font-weight:400;color:var(--ink-soft);">(không bắt buộc)</span></label>
+          <input type="text" id="rExpertise" placeholder="VD: Luật Sở hữu trí tuệ, Luật Cạnh tranh">
+        </div>
+      </div>
+      <div class="btn-row" style="justify-content:flex-end; margin-top:4px;">
+        <button class="btn btn-primary" id="btnStart">Bắt đầu đánh giá →</button>
+      </div>
+    </div>
+
+    <p class="foot-note">
+      Trong lúc đánh giá, dữ liệu chỉ lưu trên trình duyệt của quý vị. Khi hoàn tất, quý vị bấm
+      <b>Gửi lên Google Drive</b> để chuyển kết quả cho nhóm nghiên cứu. Nút tải JSON vẫn dùng được nếu cần bản sao.
+    </p>
+  </div>
+</div>
+
+<!-- ============ REVIEW ============ -->
+<div id="view-review" class="shell hidden">
+  <div class="stack">
+    <details class="codebook" id="codebookMini">
+      <summary style="cursor:pointer; font-weight:700; color:var(--accent-ink); font-size:13.5px;">Xem lại thang đánh giá</summary>
+      <div class="scale-list" style="margin-top:10px;">
+        <div class="scale-item k1"><span class="scale-key">1</span><span><b>Đồng ý</b></span></div>
+        <div class="scale-item k2"><span class="scale-key">2</span><span><b>Đồng ý một phần</b></span></div>
+        <div class="scale-item k3"><span class="scale-key">3</span><span><b>Không đồng ý</b></span></div>
+        <div class="scale-item k4"><span class="scale-key">4</span><span><b>Không đủ cơ sở đánh giá</b></span></div>
+      </div>
+    </details>
+
+    <div class="card stack" id="itemCard">
+      <div class="item-meta">
+        <span class="pill pill-gold" id="itemSection"></span>
+        <span class="pill pill-accent" id="itemWeight"></span>
+      </div>
+      <h2 class="item-title" id="itemTitle"></h2>
+      <p class="item-claim" id="itemClaim"></p>
+      <div>
+        <div class="hint" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:6px;">Căn cứ pháp lý</div>
+        <div class="statute-row" id="itemStatutes"></div>
+      </div>
+      <div>
+        <div class="hint" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:6px;">Nguồn trích dẫn</div>
+        <div class="sources" id="itemSources"></div>
+      </div>
+      <div class="toggle-en">
+        <button class="btn-text" id="btnToggleEn" style="padding-left:0;">Xem nguyên văn tiếng Anh ▾</button>
+        <blockquote class="hidden" id="itemEnQuote"></blockquote>
+      </div>
+
+      <div style="margin-top:6px;">
+        <div class="hint" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:8px;">Đánh giá của quý vị</div>
+        <div class="rating-grid" id="ratingGrid">
+          <button class="rating-btn" data-v="1"><span class="rk">1</span><span class="rt">Đồng ý</span></button>
+          <button class="rating-btn" data-v="2"><span class="rk">2</span><span class="rt">Đồng ý một phần</span></button>
+          <button class="rating-btn" data-v="3"><span class="rk">3</span><span class="rt">Không đồng ý</span></button>
+          <button class="rating-btn" data-v="4"><span class="rk">4</span><span class="rt">Không đủ cơ sở</span></button>
+        </div>
+        <p class="hint">Phím tắt: <span class="kbd">1</span>–<span class="kbd">4</span> để chọn, <span class="kbd">←</span> <span class="kbd">→</span> để chuyển mục.</p>
+      </div>
+
+      <div class="field">
+        <label for="itemComment">Góp ý (không bắt buộc)</label>
+        <textarea id="itemComment" rows="3" placeholder="Nhận xét cụ thể về căn cứ pháp lý, cách diễn giải, hoặc điều cần lưu ý…"></textarea>
+      </div>
+      <div class="field">
+        <label for="itemCorrection">Đề xuất chỉnh sửa / trích dẫn thay thế (không bắt buộc)</label>
+        <textarea id="itemCorrection" rows="2" placeholder="VD: nên viện dẫn Điều … thay vì …; hoặc bổ sung nguồn …"></textarea>
+      </div>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-ghost" id="btnPrev">← Mục trước</button>
+      <button class="btn btn-primary" id="btnNext">Mục tiếp theo →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SUMMARY ============ -->
+<div id="view-summary" class="shell hidden">
+  <div class="stack">
+    <div class="eyebrow">Hoàn tất</div>
+    <h1>Cảm ơn quý chuyên gia đã dành thời gian đánh giá</h1>
+    <p class="lede">Dưới đây là tổng hợp đánh giá của quý vị cho 12 mục. Vui lòng thêm nhận xét chung (nếu có), sau đó tải file kết quả và gửi lại cho nhóm nghiên cứu.</p>
+
+    <div class="card">
+      <div id="summaryList"></div>
+    </div>
+
+    <div class="card field">
+      <label for="overallComment">Nhận xét chung về khung phân tích (không bắt buộc)</label>
+      <textarea id="overallComment" rows="4" placeholder="VD: đánh giá chung về tính hợp lý của việc kết hợp mô hình hóa chủ đề với phân tích pháp lý, về cách đặt vấn đề, về hướng nghiên cứu tiếp theo…"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow" style="margin-bottom:10px;">Gửi kết quả</div>
+      <p class="hint" style="margin-bottom:14px;">
+        Bấm <b>Gửi lên Google Drive</b> để chuyển toàn bộ đánh giá cho nhóm nghiên cứu.
+        Nút tải JSON / sao chép chỉ dùng khi cần giữ bản sao hoặc gửi bổ sung.
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSendDrive">Gửi lên Google Drive</button>
+        <button class="btn btn-ghost" id="btnDownload">⭳ Tải kết quả (JSON)</button>
+        <button class="btn btn-ghost" id="btnCopy">Sao chép vào clipboard</button>
+        <button class="btn btn-ghost" id="btnBackReview">← Xem lại các mục</button>
+      </div>
+      <p class="hint hidden" id="driveStatus" style="margin-top:12px;"></p>
+      <textarea id="json-fallback" class="hidden" readonly></textarea>
+    </div>
+
+    <p class="foot-note">Xin chân thành cảm ơn quý chuyên gia. Ý kiến của quý vị sẽ được ghi nhận cụ thể trong bản hoàn thiện của bài viết.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ITEMS = [
+    {
+      id:"dim1", section:"Mục 3.2 · Bảng 1", weight:"58,8% (n=20/34)",
+      title:"Khía cạnh 1 — Thể chế và thực hành CGCN nền tảng",
+      claim:"Ba chủ đề bậc hai — NMF-1 (hoạt động CGCN nói chung), NMF-2 (đổi mới sáng tạo/giáo dục) và NMF-6 (học thuyết điều kiện thiết yếu) — được ánh xạ vào khung giao kết và nội dung hợp đồng. Khung Điều 22–23 được đánh giá là tương đối đầy đủ; riêng điều khoản hạn chế cạnh tranh tại Điều 25 được đánh giá là còn thiếu cơ chế đánh giá cân bằng.",
+      statutes:["Điều 22 LCGCN 2017","Điều 23 LCGCN 2017","Điều 25 LCGCN 2017"],
+      sources:"Đọc trực tiếp Luật Chuyển giao công nghệ số 07/2017/QH14; đối chiếu mẫu hợp đồng CGCN 18 điều khoản.",
+      en:"“Điều 22–23 is comparatively developed; restrictive licensing terms (linked to NMF-6) lack a case-by-case balancing mechanism, as warned by Bùi Thị Hằng Nga (2019).”"
+    },
+    {
+      id:"dim2", section:"Mục 3.2 · Bảng 1", weight:"14,7% (n=5/34)",
+      title:"Khía cạnh 2 — Công nghệ số ứng dụng ngành",
+      claim:"Chủ đề NMF-4 (AI công nghiệp, năng lượng, dữ liệu) được ánh xạ vào Điều 23 khoản 2 (đối tượng công nghệ/sản phẩm) và Điều 28 (Danh mục công nghệ hạn chế/cấm chuyển giao). Đánh giá: Điều 28 và Danh mục kèm theo được xây dựng trước làn sóng AI tạo sinh và kinh tế dữ liệu, tiêu chí kiểm soát công nghệ số chưa cụ thể.",
+      statutes:["Điều 23(2) LCGCN 2017","Điều 28 LCGCN 2017"],
+      sources:"Đọc trực tiếp Điều 28 và Danh mục công nghệ hạn chế chuyển giao kèm theo Luật CGCN 2017.",
+      en:"“Điều 28 and its accompanying list predate the wave of generative AI and the data economy; screening criteria for digital technology remain unspecified.”"
+    },
+    {
+      id:"dim3", section:"Mục 3.2 · Bảng 1", weight:"14,7% (n=5/34, đề xuất gộp)",
+      title:"Khía cạnh 3 — Công nghệ chiến lược quốc gia",
+      claim:"Đề xuất gộp NMF-5 (bán dẫn) và NMF-7 (lượng tử, an ninh mạng) thành một khía cạnh duy nhất, thay vì để NMF-7 nằm chung với NMF-4 (ứng dụng công nghiệp) như phân nhóm ban đầu, vì hai chủ đề cùng chung logic chính sách kiểm soát xuất khẩu/an ninh công nghệ lõi. Đánh giá: khái niệm 'công nghệ chiến lược' mới ở cấp văn kiện chính sách (NQ 57-NQ/TW), chưa luật hóa thành tiêu chí phân loại trong Điều 28.",
+      statutes:["Điều 28 LCGCN 2017","Nghị quyết 57-NQ/TW"],
+      sources:"Nghị quyết số 57-NQ/TW (22/12/2024); tin tức chính thức về định hướng công nghệ lượng tử, bán dẫn.",
+      en:"“'Strategic technology' currently exists chiefly at the level of policy instruments, not yet translated into classification criteria under Điều 28.”"
+    },
+    {
+      id:"dim4", section:"Mục 3.2 · Bảng 1", weight:"11,8% (n=4/34)",
+      title:"Khía cạnh 4 — Công nghệ trong nông nghiệp",
+      claim:"Chủ đề NMF-3 (nông nghiệp, AI) được ánh xạ vào Điều 23 khoản 2 và Điều 27 (giá — đặc biệt định giá công nghệ nông nghiệp có yếu tố giống, sinh học). Đánh giá: không có tiêu chí định giá riêng cho công nghệ sinh học/nông nghiệp; phải vận dụng khung định giá chung vốn còn nhiều khoảng trống.",
+      statutes:["Điều 23(2) LCGCN 2017","Điều 27 LCGCN 2017"],
+      sources:"Nguyễn Thị Minh Phương & Phí Công Thường (2026), Vietnam Journal of Science and Technology.",
+      en:"“No valuation criteria exist for biotechnology/agricultural technology; parties must rely on a general valuation framework that itself remains underdeveloped.”"
+    },
+    {
+      id:"central", section:"Mục 3.3 · Phát hiện trung tâm", weight:"NMF-6 (n=3/34)",
+      title:"Học thuyết điều kiện thiết yếu — hội tụ giữa mô hình hóa chủ đề và nghiên cứu pháp lý",
+      claim:"Chủ đề NMF-6 được mô hình toán học phát hiện thuần túy từ đặc trưng từ vựng của 3 văn bản (không có tri thức pháp lý được đưa vào a priori), trùng khớp với đúng khoảng trống mà Bùi Thị Hằng Nga (2019) chỉ ra: pháp luật hiện hành thiếu cơ chế đánh giá cân bằng theo từng vụ việc giữa từ chối chuyển giao chính đáng và lạm dụng vị trí thống lĩnh thị trường. Đây là phát hiện trung tâm của toàn bài.",
+      statutes:["Điều 22 LCGCN 2017","Luật Cạnh tranh 2018","Luật SHTT (cấp phép bắt buộc)"],
+      sources:"Bùi Thị Hằng Nga (2019), Tạp chí Nghiên cứu Lập pháp, Số 13(389).",
+      en:"“The prevailing approach in practice — treating a refusal to license as a per se infringement whenever the rights-holder occupies a dominant position — is unduly rigid… a case-by-case evaluative mechanism [should weigh] competitive impact against innovation incentives simultaneously.”"
+    },
+    {
+      id:"gap1", section:"Mục 4.1 · Khoảng trống #1", weight:"Điều 22, 25",
+      title:"Thiếu cơ chế đánh giá cân bằng cho điều khoản hạn chế cạnh tranh",
+      claim:"Điều 25 quy định quyền, nghĩa vụ bên giao công nghệ nhưng không đặt ra cơ chế phân biệt điều khoản hạn chế 'hợp lý' với điều khoản mang tính lạm dụng vị trí thống lĩnh. Luật CGCN không thiết lập cơ chế phối hợp giữa cơ quan quản lý cạnh tranh và cơ quan quản lý khoa học công nghệ khi xử lý tranh chấp loại này.",
+      statutes:["Điều 22 LCGCN 2017","Điều 25 LCGCN 2017","Luật Cạnh tranh 2018"],
+      sources:"Bùi Thị Hằng Nga (2019), Tạp chí Nghiên cứu Lập pháp.",
+      en:"“The 2017 Law on Technology Transfer establishes no mechanism for distinguishing a restrictive term that is reasonable and necessary… from one that constitutes an abuse of a dominant market position.”"
+    },
+    {
+      id:"gap2", section:"Mục 4.2 · Khoảng trống #2", weight:"Điều 23(6), 27",
+      title:"Thiếu tiêu chí, dữ liệu định giá công nghệ",
+      claim:"Luật không đưa ra nguyên tắc, tiêu chí định giá công nghệ cụ thể. Năm khoảng trống được hệ thống hóa: thiếu nguyên tắc/tiêu chí chi tiết; thị trường mua bán tài sản trí tuệ chưa phát triển; chưa có cơ sở dữ liệu quốc gia về giao dịch; thiếu quy định khi không có tài sản so sánh; chưa có tiêu chuẩn đào tạo chuyên gia định giá.",
+      statutes:["Điều 23(6) LCGCN 2017","Điều 27 LCGCN 2017","Luật Giá 2023"],
+      sources:"Nguyễn Thị Minh Phương & Phí Công Thường (2026), Vietnam Journal of Science and Technology.",
+      en:"“Five specific gaps in the current legal framework for valuing and appraising intellectual property assets in Vietnam…”"
+    },
+    {
+      id:"gap3", section:"Mục 4.3 · Khoảng trống #3", weight:"gián tiếp, qua chủ thể bên giao",
+      title:"Ranh giới sở hữu tài sản trí tuệ hình thành từ ngân sách nhà nước",
+      claim:"Việc xác định quyền sở hữu, quyền quyết định chuyển giao/khai thác thương mại sáng chế từ nhiệm vụ KH&CN dùng ngân sách nhà nước chịu sự điều chỉnh của pháp luật quản lý, sử dụng tài sản công — vốn thiết kế cho tài sản công truyền thống. Nghị định 271/2025/NĐ-CP thí điểm cơ chế spin-off nhưng hiện chỉ áp dụng cho Hà Nội.",
+      statutes:["Pháp luật quản lý, sử dụng tài sản công","Nghị định 271/2025/NĐ-CP"],
+      sources:"Phan Quoc Nguyen (2020), US-China Law Review; báo chí chuyên ngành về sửa đổi Luật SHTT 2022.",
+      en:"“A more concrete step has been piloted under Decree No. 271/2025/NĐ-CP… a local pilot rather than a nationally applicable rule.”"
+    },
+    {
+      id:"gap4", section:"Mục 4.4 · Khoảng trống #4", weight:"Điều 23(12)",
+      title:"Cơ chế bồi thường thiệt hại chưa phù hợp với tài sản biến thiên cao",
+      claim:"Điều 23(11)-(12) dẫn chiếu áp dụng cơ chế bồi thường thiệt hại thực tế của Bộ luật Dân sự 2015 — khó phù hợp với tài sản công nghệ có giá trị biến động lớn theo thời gian. Cơ chế linh hoạt hơn của Luật SHTT chỉ áp dụng khi công nghệ có văn bằng bảo hộ.",
+      statutes:["Điều 23(12) LCGCN 2017","Bộ luật Dân sự 2015","Luật SHTT"],
+      sources:"Phân tích trực tiếp từ văn bản Luật CGCN 2017 và Luật SHTT hiện hành.",
+      en:"“Where transferred technology is not tied to a protection title, a TT contract must fall back on the Civil Code's actual-damages regime.”"
+    },
+    {
+      id:"gap5", section:"Mục 4.5 · Khoảng trống #5", weight:"Điều 28 và Danh mục",
+      title:"Kiểm soát an ninh công nghệ số/AI chưa bao quát",
+      claim:"Điều 28 và Danh mục công nghệ hạn chế chuyển giao xây dựng trên logic công nghệ truyền thống, chưa bao quát rủi ro an ninh phi truyền thống của mô hình AI lưỡng dụng, dữ liệu huấn luyện quy mô lớn, hạ tầng điện toán hiệu năng cao.",
+      statutes:["Điều 28 LCGCN 2017","Pháp luật an ninh mạng"],
+      sources:"Phân tích trực tiếp Điều 28 và Danh mục kèm theo; đối chiếu xu hướng chính sách quốc tế.",
+      en:"“Vietnamese TT law currently addresses such cases chiefly through the general dual-use export-control framework — not specific to digital technology.”"
+    },
+    {
+      id:"gap6", section:"Mục 4.6 · Khoảng trống #6", weight:"Điều 28",
+      title:"'Công nghệ chiến lược quốc gia' chưa có tiêu chí phân loại",
+      claim:"Nghị quyết 57-NQ/TW xác định công nghệ lượng tử là ưu tiên chiến lược, nhưng khái niệm 'công nghệ chiến lược' chưa được luật hóa thành tiêu chí phân loại cụ thể trong Điều 28 hay Luật Công nghệ cao 2014. Các ưu đãi/hạn chế đặc thù cho bán dẫn, lượng tử thiếu cơ sở pháp lý ở tầng luật để triển khai đồng bộ.",
+      statutes:["Điều 28 LCGCN 2017","Luật Công nghệ cao 2014","Nghị quyết 57-NQ/TW","Luật KH,CN&ĐMST 93/2025/QH15"],
+      sources:"Nghị quyết số 57-NQ/TW; tin tức chính thức về chiến lược công nghệ lượng tử của Việt Nam.",
+      en:"“'Strategic national technology' (semiconductors, quantum computing) currently lacks a statutory basis for coherent implementation.”"
+    },
+    {
+      id:"gap7", section:"Mục 4.7 · Khoảng trống #7", weight:"Điều 29–32",
+      title:"Thủ tục đăng ký, cấp phép còn nặng tính hành chính (đang cải cách)",
+      claim:"Bộ KH&CN đã rút ngắn một loạt thời hạn xử lý hồ sơ (đầu năm 2026), cho thấy chính cơ quan quản lý nhìn nhận quy trình trước đó là kéo dài. Khoảng cách giữa số văn bằng sáng chế được cấp và số hợp đồng CGCN đăng ký chính thức vẫn là vấn đề cần tiếp tục theo dõi sau cải cách.",
+      statutes:["Điều 29–32 LCGCN 2017"],
+      sources:"Báo Chính phủ điện tử (09/01/2026); Phan Quoc Nguyen (2020), US-China Law Review.",
+      en:"“This reform indicates that the regulator itself regarded the prior process as unduly protracted.”"
+    }
+  ];
+
+  var LS_KEY = "cgcn_review_state_v1";
+
+  // Dán URL Web app Apps Script (kết thúc bằng /exec). Để trống thì nút gửi sẽ báo chưa cấu hình.
+  var DRIVE_WEBAPP_URL = "";
+
+  var state = {
+    reviewer:{name:"",affil:"",email:"",expertise:""},
+    responses:{},
+    overallComment:"",
+    index:0,
+    startedAt:null
+  };
+
+  function freshResponses(){
+    var r = {};
+    ITEMS.forEach(function(it){ r[it.id] = {rating:null, comment:"", correction:""}; });
+    return r;
+  }
+  state.responses = freshResponses();
+
+  function save(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      var parsed = JSON.parse(raw);
+      if(!parsed || !parsed.responses) return null;
+      return parsed;
+    }catch(e){ return null; }
+  }
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  var viewLanding = $("view-landing"), viewReview = $("view-review"), viewSummary = $("view-summary");
+  var topProgress = $("topProgress");
+
+  function showView(v){
+    [viewLanding, viewReview, viewSummary].forEach(function(el){ el.classList.add("hidden"); });
+    v.classList.remove("hidden");
+    topProgress.classList.toggle("hidden", v !== viewReview);
+    window.scrollTo({top:0, behavior:"instant"});
+  }
+
+  // ---------- landing ----------
+  var existing = load();
+  if(existing && existing.startedAt){
+    $("resumeBanner").classList.remove("hidden");
+  }
+  $("btnResume").addEventListener("click", function(){
+    state = existing;
+    $("rName").value = state.reviewer.name || "";
+    $("rAffil").value = state.reviewer.affil || "";
+    $("rEmail").value = state.reviewer.email || "";
+    $("rExpertise").value = state.reviewer.expertise || "";
+    enterReview();
+  });
+  $("btnDiscard").addEventListener("click", function(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    $("resumeBanner").classList.add("hidden");
+    state = {reviewer:{name:"",affil:"",email:"",expertise:""}, responses:freshResponses(), overallComment:"", index:0, startedAt:null};
+  });
+
+  $("btnStart").addEventListener("click", function(){
+    state.reviewer.name = $("rName").value.trim();
+    state.reviewer.affil = $("rAffil").value.trim();
+    state.reviewer.email = $("rEmail").value.trim();
+    state.reviewer.expertise = $("rExpertise").value.trim();
+    state.startedAt = state.startedAt || new Date().toISOString();
+    state.index = 0;
+    save();
+    enterReview();
+  });
+
+  function enterReview(){
+    showView(viewReview);
+    renderItem();
+  }
+
+  // ---------- review ----------
+  var enShown = false;
+  $("btnToggleEn").addEventListener("click", function(){
+    enShown = !enShown;
+    $("itemEnQuote").classList.toggle("hidden", !enShown);
+    $("btnToggleEn").textContent = enShown ? "Ẩn nguyên văn tiếng Anh ▴" : "Xem nguyên văn tiếng Anh ▾";
+  });
+
+  function renderItem(){
+    var it = ITEMS[state.index];
+    $("itemSection").textContent = it.section;
+    $("itemWeight").textContent = it.weight;
+    $("itemTitle").textContent = it.title;
+    $("itemClaim").textContent = it.claim;
+    $("itemStatutes").innerHTML = it.statutes.map(function(s){ return '<span class="statute-chip">'+s+'</span>'; }).join("");
+    $("itemSources").textContent = it.sources;
+    $("itemEnQuote").textContent = it.en;
+    enShown = false;
+    $("itemEnQuote").classList.add("hidden");
+    $("btnToggleEn").textContent = "Xem nguyên văn tiếng Anh ▾";
+
+    var resp = state.responses[it.id];
+    $("itemComment").value = resp.comment || "";
+    $("itemCorrection").value = resp.correction || "";
+    document.querySelectorAll(".rating-btn").forEach(function(btn){
+      btn.classList.toggle("active", String(resp.rating) === btn.getAttribute("data-v"));
+    });
+
+    $("btnPrev").disabled = (state.index === 0);
+    $("btnNext").textContent = (state.index === ITEMS.length - 1) ? "Xem tổng hợp →" : "Mục tiếp theo →";
+
+    var pct = Math.round(((state.index) / ITEMS.length) * 100);
+    $("progressFill").style.width = pct + "%";
+    $("progressLabel").textContent = (state.index+1) + "/" + ITEMS.length;
+
+    $("itemCard").scrollTop = 0;
+  }
+
+  document.querySelectorAll(".rating-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var it = ITEMS[state.index];
+      state.responses[it.id].rating = parseInt(btn.getAttribute("data-v"), 10);
+      document.querySelectorAll(".rating-btn").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      save();
+    });
+  });
+
+  function persistCurrentText(){
+    var it = ITEMS[state.index];
+    state.responses[it.id].comment = $("itemComment").value;
+    state.responses[it.id].correction = $("itemCorrection").value;
+    save();
+  }
+  $("itemComment").addEventListener("input", persistCurrentText);
+  $("itemCorrection").addEventListener("input", persistCurrentText);
+
+  function goNext(){
+    persistCurrentText();
+    if(state.index < ITEMS.length - 1){
+      state.index++;
+      save();
+      renderItem();
+    } else {
+      enterSummary();
+    }
+  }
+  function goPrev(){
+    persistCurrentText();
+    if(state.index > 0){
+      state.index--;
+      save();
+      renderItem();
+    }
+  }
+  $("btnNext").addEventListener("click", goNext);
+  $("btnPrev").addEventListener("click", goPrev);
+
+  document.addEventListener("keydown", function(e){
+    if(viewReview.classList.contains("hidden")) return;
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if(tag === "TEXTAREA" || tag === "INPUT") return;
+    if(["1","2","3","4"].indexOf(e.key) !== -1){
+      var it = ITEMS[state.index];
+      state.responses[it.id].rating = parseInt(e.key, 10);
+      document.querySelectorAll(".rating-btn").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-v") === e.key);
+      });
+      save();
+    } else if(e.key === "ArrowRight"){ goNext(); }
+    else if(e.key === "ArrowLeft"){ goPrev(); }
+  });
+
+  // ---------- summary ----------
+  var RATING_LABEL = {1:"Đồng ý", 2:"Đồng ý một phần", 3:"Không đồng ý", 4:"Không đủ cơ sở"};
+
+  function enterSummary(){
+    $("overallComment").value = state.overallComment || "";
+    var list = $("summaryList");
+    list.innerHTML = "";
+    ITEMS.forEach(function(it){
+      var resp = state.responses[it.id];
+      var row = document.createElement("div");
+      row.className = "summary-row";
+      var badgeCls = resp.rating ? ("b"+resp.rating) : "b4";
+      var label = resp.rating ? RATING_LABEL[resp.rating] : "Chưa đánh giá";
+      row.innerHTML = '<span class="st">'+it.title+'</span><span class="badge '+badgeCls+'">'+label+'</span>';
+      list.appendChild(row);
+    });
+    showView(viewSummary);
+  }
+
+  $("btnBackReview").addEventListener("click", function(){
+    state.index = 0;
+    save();
+    showView(viewReview);
+    renderItem();
+  });
+  $("overallComment").addEventListener("input", function(){
+    state.overallComment = $("overallComment").value;
+    save();
+  });
+
+  function buildReport(){
+    var items = ITEMS.map(function(it){
+      var resp = state.responses[it.id];
+      return {
+        id: it.id,
+        section: it.section,
+        title: it.title,
+        rating: resp.rating,
+        ratingLabel: resp.rating ? RATING_LABEL[resp.rating] : null,
+        comment: resp.comment || "",
+        suggestedCorrection: resp.correction || ""
+      };
+    });
+    return {
+      paper: "Technology Transfer Contracts in Vietnam: Mapping Regulatory Gaps through Topic Modelling and Doctrinal Analysis",
+      reviewer: state.reviewer,
+      submittedAt: new Date().toISOString(),
+      overallComment: state.overallComment || "",
+      items: items
+    };
+  }
+
+  function setDriveStatus(text, ok){
+    var el = $("driveStatus");
+    el.classList.remove("hidden");
+    el.textContent = text;
+    el.style.color = ok ? "var(--agree)" : "var(--disagree)";
+  }
+
+  function submitToDrive(report){
+    if(!DRIVE_WEBAPP_URL){
+      return Promise.reject(new Error("missing-url"));
+    }
+    // text/plain + no-cors: tránh preflight CORS khi gọi Apps Script từ GitHub Pages.
+    return fetch(DRIVE_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(report)
+    });
+  }
+
+  $("btnSendDrive").addEventListener("click", async function(){
+    var btn = $("btnSendDrive");
+    if(btn.disabled) return;
+    btn.disabled = true;
+    var old = btn.textContent;
+    btn.textContent = "Đang gửi…";
+    setDriveStatus("Đang gửi kết quả lên Google Drive…", true);
+    try{
+      await submitToDrive(buildReport());
+      btn.textContent = "Đã gửi lên Drive ✓";
+      setDriveStatus("Đã gửi. Nhóm nghiên cứu sẽ thấy file JSON trong thư mục Google Drive đã cấu hình.", true);
+    }catch(err){
+      btn.disabled = false;
+      btn.textContent = old;
+      if(err && err.message === "missing-url"){
+        setDriveStatus("Chưa dán DRIVE_WEBAPP_URL trong review_site.html. Hãy hoàn tất bước Apps Script rồi điền URL /exec.", false);
+      }else{
+        setDriveStatus("Không gửi được. Vui lòng tải file JSON và gửi lại cho nhóm nghiên cứu.", false);
+      }
+    }
+  });
+
+  function browserDownload(filename, json){
+    // Standard client-side download via Blob + temporary <a>.
+    // Works on any normal web host; not used inside the Claude Artifact
+    // sandbox, which blocks this path (that case is handled above).
+    try{
+      var blob = new Blob([json], {type:"application/json"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  $("btnDownload").addEventListener("click", async function(){
+    var report = buildReport();
+    var json = JSON.stringify(report, null, 2);
+    var namePart = (state.reviewer.name || "reviewer").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || "reviewer";
+    var filename = "cgcn_review_" + namePart + ".json";
+
+    // 1) Inside the Claude Artifact sandbox: use the granted downloads capability.
+    if(typeof claude !== "undefined" && typeof claude.use === "function"){
+      try{
+        var downloads = await claude.use("downloads");
+        if(downloads){
+          await downloads.save({filename: filename, data: json});
+          return;
+        }
+      }catch(err){
+        // fall through — declined, unavailable, or the capability isn't granted here
+      }
+    }
+
+    // 2) Self-hosted / any normal browser: plain download.
+    if(browserDownload(filename, json)) return;
+
+    // 3) Last-resort fallback: show JSON for manual copy.
+    var ta = $("json-fallback");
+    ta.classList.remove("hidden");
+    ta.value = json;
+    ta.focus();
+    ta.select();
+  });
+
+  $("btnCopy").addEventListener("click", async function(){
+    var json = JSON.stringify(buildReport(), null, 2);
+    try{
+      await navigator.clipboard.writeText(json);
+      var btn = $("btnCopy");
+      var old = btn.textContent;
+      btn.textContent = "Đã sao chép ✓";
+      setTimeout(function(){ btn.textContent = old; }, 1800);
+    }catch(e){
+      var ta = $("json-fallback");
+      ta.classList.remove("hidden");
+      ta.value = json;
+      ta.focus();
+      ta.select();
+    }
+  });
+
+})();
+</script>
